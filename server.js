@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const { getBubblReply, isHighRiskMessage } = require("./ai.js");
+const { getBubblReply, isHighRiskMessage, getGuardReply } = require("./ai.js");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -47,6 +47,12 @@ app.post("/api/chat", async (request, response) => {
 
   if (message.length > 1200) {
     response.status(400).json({ error: "Let's keep this first chat short and comfortable." });
+    return;
+  }
+
+  const guardReply = getGuardReply(message);
+  if (guardReply) {
+    response.json({ guarded: true, reply: guardReply });
     return;
   }
 

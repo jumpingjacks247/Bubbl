@@ -33,6 +33,7 @@ The OpenAI key is read only from `.env`. The model is `gpt-5.6-luna`. If the AI 
 - If no Daily Social Goal is finished, DearBubbl shows a small, closable reminder every time the app opens and about once per local clock hour while it stays open. It stops for the day after one goal is checked.
 - Clicking Bubbl's `b` icon opens a speaking-style chooser with clearly different Friendly, Casual/Chatty, Empathetic, and Upbeat tones. Each has a small ASCII face, a different description/color, and the choice saves in the browser and is applied to the next AI message.
 - The chat now has a “Practice an opinion” doorway. It sends a safe opinion-practice mode to Bubbl, which gives kind, specific feedback on how the opinion was expressed.
+- Bubbl refuses clearly off-topic questions with a gentle scope reminder and refuses requests to override, reveal, or bypass its rules before sending anything to the AI.
 - The header and hero now use the supplied DearBubbl logo, and the promotion line says “Always a place to land.”
 - The page now uses a pale blue and white cloud background, dark navy text, and varied pastel button colors.
 - The large hero logo now sits on a white circle so it stays clear over the cloud background.
