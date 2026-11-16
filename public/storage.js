@@ -119,6 +119,8 @@ const rarityTiers = [
 const sampleState = {
   version: 1,
   voiceStyle: "friendly",
+  socialReminderStamp: "",
+  dailyChallenge: { date: "", id: "", completed: false },
   conversations: [],
   completedSteps: [],
   dailyGoals: { date: "", completed: [] },
@@ -164,6 +166,29 @@ function setVoiceStyle(style) {
   saveState(state);
 }
 
+function getSocialReminderStamp() {
+  return typeof readState().socialReminderStamp === "string" ? readState().socialReminderStamp : "";
+}
+
+function setSocialReminderStamp(stamp) {
+  const state = readState();
+  state.socialReminderStamp = stamp;
+  saveState(state);
+}
+
+function ensureDailyChallenge(state) {
+  const today = todayKey();
+  const steps = Array.isArray(state.sampleSteps) ? state.sampleSteps : [];
+  const currentStepExists = steps.some((step) => step.id === state.dailyChallenge?.id);
+  if (!state.dailyChallenge || state.dailyChallenge.date !== today || !currentStepExists) {
+    const dateNumber = Number(today.replaceAll("-", ""));
+    const step = steps[dateNumber % steps.length] || steps[0];
+    state.dailyChallenge = { date: today, id: step.id, completed: false };
+    saveState(state);
+  }
+  return state.dailyChallenge;
+}
+
 function addConversation(conversation) {
   const state = readState();
   state.conversations.push(conversation);
@@ -172,8 +197,17 @@ function addConversation(conversation) {
 
 function completeStep(stepId) {
   const state = readState();
+  const dailyChallenge = ensureDailyChallenge(state);
+  if (dailyChallenge.id === stepId) dailyChallenge.completed = true;
   if (!state.completedSteps.includes(stepId)) state.completedSteps.push(stepId);
   saveState(state);
+}
+
+function getDailyChallenge() {
+  const state = readState();
+  const dailyChallenge = ensureDailyChallenge(state);
+  const step = state.sampleSteps.find((candidate) => candidate.id === dailyChallenge.id) || state.sampleSteps[0];
+  return { ...step, completed: Boolean(dailyChallenge.completed) };
 }
 
 function getDailyGoals() {
@@ -216,4 +250,4 @@ function getQuoteCollection() {
   return collected.map(quoteWithRarity);
 }
 
-window.DearBubblStorage = { readState, addConversation, completeStep, getDailyGoals, toggleDailyGoal, drawBlindBoxQuote, getQuoteCollection, getVoiceStyle, setVoiceStyle };
+window.DearBubblStorage = { readState, addConversation, completeStep, getDailyChallenge, getDailyGoals, toggleDailyGoal, drawBlindBoxQuote, getQuoteCollection, getVoiceStyle, setVoiceStyle, getSocialReminderStamp, setSocialReminderStamp };

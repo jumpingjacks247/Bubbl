@@ -99,3 +99,15 @@ body.gallery-open { overflow: hidden; }
 .voice-style-option[data-style="empathetic"] .style-ascii { color: #4d7398; }
 .voice-style-option[data-style="upbeat"] .style-ascii { color: #4a9676; }
 .chat-heading p span { color: var(--purple); font-weight: 700; }
+.social-reminder[hidden] { display: none; }
+.social-reminder { position: fixed; right: 22px; bottom: 22px; z-index: 20; width: min(330px, calc(100vw - 30px)); padding: 20px 20px 18px; background: #fff; border: 2px solid #d2c9ff; border-radius: 19px 19px 19px 6px; box-shadow: 0 16px 34px rgba(42,78,113,.2); animation: reminderPop .28s ease-out both; }
+.social-reminder::before { content: "b"; position: absolute; left: -13px; bottom: -2px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 10px 10px 10px 3px; background: var(--lavender); color: var(--purple); font-family: Fraunces, serif; font-weight: 700; }
+.social-reminder-close { position: absolute; top: 8px; right: 10px; width: 26px; height: 26px; border: 0; border-radius: 50%; background: #f0edff; color: var(--ink); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.social-reminder-close:hover { background: #e1dafe; }
+.social-reminder-kicker { margin: 0 0 5px; color: var(--purple); font-size: .62rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.social-reminder h2 { max-width: 270px; margin: 0 22px 8px 0; color: var(--ink); font-family: Fraunces, serif; font-size: 1.18rem; line-height: 1.08; letter-spacing: -.035em; }
+.social-reminder > p:not(.social-reminder-kicker) { margin: 0 0 13px; color: var(--muted); font-size: .74rem; line-height: 1.4; }
+.social-reminder-action { border: 0; border-radius: 99px; padding: 9px 13px; background: var(--purple); color: #fff; font-size: .7rem; font-weight: 700; cursor: pointer; }
+.social-reminder-action:hover { transform: translateY(-1px); }
+@keyframes reminderPop { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 720px) { .social-reminder { right: 15px; bottom: 15px; } }

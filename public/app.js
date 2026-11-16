@@ -25,11 +25,40 @@ const voiceStyleButton = document.querySelector("#voiceStyleButton");
 const voiceStyleMenu = document.querySelector("#voiceStyleMenu");
 const voiceStyleOptions = document.querySelectorAll(".voice-style-option");
 const voiceStyleCurrent = document.querySelector("#voiceStyleCurrent");
+const socialReminder = document.querySelector("#socialReminder");
+const socialReminderClose = document.querySelector("#socialReminderClose");
+const socialReminderAction = document.querySelector("#socialReminderAction");
+const socialReminderHours = document.querySelector("#socialReminderHours");
+const socialReminderHourWord = document.querySelector("#socialReminderHourWord");
 
 let lastStepId = null;
 let quoteOpenTimer;
 let quoteHideTimer;
+let socialReminderTimer;
 const voiceStyleLabels = { friendly: "Friendly", casual: "Casual/Chatty", empathetic: "Empathetic", upbeat: "Upbeat" };
+
+function closeSocialReminder() {
+  socialReminder.hidden = true;
+}
+
+function checkSocialReminder() {
+  const completedCount = DearBubblStorage.getDailyGoals().filter((goal) => goal.completed).length;
+  if (completedCount > 0) {
+    closeSocialReminder();
+    return;
+  }
+
+  const now = new Date();
+  const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const hoursLeft = Math.max(1, Math.ceil((nextMidnight - now) / 3600000));
+  const reminderStamp = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}-${now.getHours()}`;
+  if (DearBubblStorage.getSocialReminderStamp() === reminderStamp) return;
+
+  socialReminderHours.textContent = hoursLeft;
+  socialReminderHourWord.textContent = hoursLeft === 1 ? "hour" : "hours";
+  socialReminder.hidden = false;
+  DearBubblStorage.setSocialReminderStamp(reminderStamp);
+}
 
 function closeVoiceStyleMenu() {
   voiceStyleMenu.hidden = true;
@@ -129,6 +158,9 @@ function renderDailyGoals() {
       }
     });
   });
+
+  if (completedCount > 0) closeSocialReminder();
+  else checkSocialReminder();
 }
 
 function addMessage(kind, text) {
@@ -160,10 +192,13 @@ function containsPrivateDetail(text) {
 }
 
 function showNextStep() {
-  const state = DearBubblStorage.readState();
-  const available = state.sampleSteps.find((step) => !state.completedSteps.includes(step.id)) || state.sampleSteps[0];
-  lastStepId = available.id;
-  stepText.textContent = available.label;
+  const challenge = DearBubblStorage.getDailyChallenge();
+  lastStepId = challenge.id;
+  stepText.textContent = challenge.completed
+    ? "You completed today's challenge. That counts as a brave step."
+    : challenge.label;
+  completeStepButton.textContent = challenge.completed ? "Completed today ✓" : "I’ll try this →";
+  completeStepButton.disabled = challenge.completed;
   nextStepCard.hidden = false;
 }
 
@@ -196,9 +231,18 @@ document.addEventListener("click", (event) => {
   if (!voiceStyleMenu.hidden && !event.target.closest(".voice-style-wrap")) closeVoiceStyleMenu();
 });
 
+socialReminderClose.addEventListener("click", closeSocialReminder);
+socialReminderAction.addEventListener("click", () => {
+  closeSocialReminder();
+  document.querySelector("#dailyGoalsTitle")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  dailyGoalList.querySelector("input[data-goal-id]")?.focus();
+});
+
 renderDailyGoals();
 renderQuoteCollection();
 renderVoiceStyle();
+showNextStep();
+socialReminderTimer = window.setInterval(checkSocialReminder, 60000);
 quoteNoteClose.addEventListener("click", closeQuoteNote);
 galleryOpenButton.addEventListener("click", openGallery);
 galleryClose.addEventListener("click", closeGallery);
@@ -259,6 +303,7 @@ chatForm.addEventListener("submit", async (event) => {
 completeStepButton.addEventListener("click", () => {
   if (!lastStepId) return;
   DearBubblStorage.completeStep(lastStepId);
+  showNextStep();
   completeStepButton.textContent = "Saved as a win ✓";
   completeStepButton.disabled = true;
   stepText.textContent = "That counts. Small steps are still brave steps. You can leave whenever you want.";
