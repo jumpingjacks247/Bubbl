@@ -10,21 +10,26 @@ const voiceStyles = {
   empathetic: "Lead with a gentle reflection of the user's feeling and validate it before offering any idea. Use calm, patient language. Do not rush to positivity or advice.",
   upbeat: "Use bright, hopeful energy and one encouraging next step. Acknowledge hard feelings first; never use forced cheer or minimize sadness.",
 };
+const chatModes = {
+  general: "Respond as a supportive listening companion.",
+  opinion: "This is opinion practice. Give kind, specific feedback: name one strength in how the opinion was expressed, then offer one gentle suggestion to make it clearer, kinder, or more confident. If there is no clear opinion yet, invite the user to begin with 'I think...', 'I feel...', or 'I prefer...'. Do not debate, mock, or judge whether the opinion is right. Keep it to one or two supportive sentences.",
+};
 
 function isHighRiskMessage(message) {
   return /\b(kill myself|hurt myself|suicide|self[- ]harm|someone is hurting me|being abused|threatening me|going to hurt someone|hurt them|hurt him|hurt her)\b/i.test(message);
 }
 
-async function getBubblReply(message, style = "friendly") {
+async function getBubblReply(message, style = "friendly", mode = "general") {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OPENAI_API_KEY is missing");
   }
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const chosenStyle = voiceStyles[style] || voiceStyles.friendly;
+  const chosenMode = chatModes[mode] || chatModes.general;
   const response = await client.responses.create({
     model,
-    instructions: `${brief}\n\nSpeaking style chosen by the user: ${chosenStyle} Keep the response to one or two supportive sentences.`,
+    instructions: `${brief}\n\nSpeaking style chosen by the user: ${chosenStyle}\n\nConversation mode: ${chosenMode}\n\nKeep the response to one or two supportive sentences.`,
     input: [{ role: "user", content: message }],
     max_output_tokens: 180,
   });

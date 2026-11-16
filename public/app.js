@@ -35,13 +35,14 @@ let lastStepId = null;
 let quoteOpenTimer;
 let quoteHideTimer;
 let socialReminderTimer;
+let chatMode = "general";
 const voiceStyleLabels = { friendly: "Friendly", casual: "Casual/Chatty", empathetic: "Empathetic", upbeat: "Upbeat" };
 
 function closeSocialReminder() {
   socialReminder.hidden = true;
 }
 
-function checkSocialReminder() {
+function checkSocialReminder(forceOnOpen = false) {
   const completedCount = DearBubblStorage.getDailyGoals().filter((goal) => goal.completed).length;
   if (completedCount > 0) {
     closeSocialReminder();
@@ -52,7 +53,7 @@ function checkSocialReminder() {
   const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
   const hoursLeft = Math.max(1, Math.ceil((nextMidnight - now) / 3600000));
   const reminderStamp = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}-${now.getHours()}`;
-  if (DearBubblStorage.getSocialReminderStamp() === reminderStamp) return;
+  if (!forceOnOpen && DearBubblStorage.getSocialReminderStamp() === reminderStamp) return;
 
   socialReminderHours.textContent = hoursLeft;
   socialReminderHourWord.textContent = hoursLeft === 1 ? "hour" : "hours";
@@ -205,6 +206,7 @@ function showNextStep() {
 document.querySelectorAll(".starter-card").forEach((button) => {
   button.addEventListener("click", () => {
     messageInput.value = `${button.dataset.starter} `;
+    chatMode = button.dataset.mode || "general";
     messageInput.focus();
     starterArea.classList.add("chosen");
     privacyHint.textContent = "Add only what feels okay to share ♡";
@@ -242,6 +244,7 @@ renderDailyGoals();
 renderQuoteCollection();
 renderVoiceStyle();
 showNextStep();
+checkSocialReminder(true);
 socialReminderTimer = window.setInterval(checkSocialReminder, 60000);
 quoteNoteClose.addEventListener("click", closeQuoteNote);
 galleryOpenButton.addEventListener("click", openGallery);
@@ -272,6 +275,8 @@ chatForm.addEventListener("submit", async (event) => {
 
   addMessage("user", message);
   DearBubblStorage.addConversation({ role: "user", text: message, createdAt: new Date().toISOString() });
+  const selectedChatMode = chatMode;
+  chatMode = "general";
   messageInput.value = "";
   sendButton.disabled = true;
   sendButton.querySelector("span:first-child").textContent = "Thinking…";
@@ -281,7 +286,7 @@ chatForm.addEventListener("submit", async (event) => {
     const result = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, style: DearBubblStorage.getVoiceStyle() }),
+      body: JSON.stringify({ message, style: DearBubblStorage.getVoiceStyle(), mode: selectedChatMode }),
     });
     const data = await result.json();
     removeThinking();

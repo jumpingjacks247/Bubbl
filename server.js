@@ -7,6 +7,7 @@ const { getBubblReply, isHighRiskMessage } = require("./ai.js");
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const allowedVoiceStyles = new Set(["friendly", "casual", "empathetic", "upbeat"]);
+const allowedChatModes = new Set(["general", "opinion"]);
 
 app.use(express.json({ limit: "32kb" }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -18,6 +19,7 @@ app.get("/api/health", (_request, response) => {
 app.post("/api/chat", async (request, response) => {
   const message = typeof request.body?.message === "string" ? request.body.message.trim() : "";
   const style = allowedVoiceStyles.has(request.body?.style) ? request.body.style : "friendly";
+  const mode = allowedChatModes.has(request.body?.mode) ? request.body.mode : "general";
 
   if (!message) {
     response.status(400).json({ error: "Please write a message first." });
@@ -38,7 +40,7 @@ app.post("/api/chat", async (request, response) => {
   }
 
   try {
-    const reply = await getBubblReply(message, style);
+    const reply = await getBubblReply(message, style, mode);
     response.json({ reply });
   } catch (error) {
     console.error("DearBubbl AI request failed:", error?.message || "unknown error");
