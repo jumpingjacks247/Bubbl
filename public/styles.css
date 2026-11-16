@@ -12,7 +12,7 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: linear-gradient(rgba(219,235,250,.62), rgba(239,248,255,.82)), url("/assets/pastels-clouds-pale-blue.jpg") center top / cover fixed; background-color: #c8def3; color: var(--ink); font-family: "DM Sans", sans-serif; }
+body { margin: 0; background: linear-gradient(rgba(219,235,250,.62), rgba(239,248,255,.82)), url("assets/pastels-clouds-pale-blue.jpg") center top / cover fixed; background-color: #c8def3; color: var(--ink); font-family: "DM Sans", sans-serif; }
 button, textarea { font: inherit; }
 button { cursor: pointer; }
 .app-shell { max-width: 1100px; margin: 0 auto; padding: 24px 28px 52px; }

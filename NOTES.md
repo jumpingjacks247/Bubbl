@@ -17,6 +17,13 @@ The OpenAI key is read only from `.env`. The model is `gpt-5.6-luna`. If the AI 
 - The long `sk-...` text supplied for deployment is the secret value, not a valid Vercel variable name. Vercel variable names can use letters, numbers, and underscores, so the code uses `OPENAI_API_KEY` and never contains the secret.
 - Keep `.env` and `.env*` ignored. Browser saving still works locally and online; there is no database yet.
 
+## GitHub Pages setup
+
+- A GitHub Actions workflow publishes the static files in `public/` to GitHub Pages after a push to `main`.
+- In the repository's Settings → Pages, choose GitHub Actions if GitHub asks for a publishing source.
+- GitHub Pages cannot run the private AI server. Before publishing, put the existing Vercel server URL in `public/site-config.js` as `window.DEARBUBBL_API_BASE`, without a trailing slash. Do not put an API key there.
+- The Vercel server allows the DearBubbl GitHub Pages origin to call `/api/chat`; local `npm start` still works too.
+
 ## What’s done
 
 - Version 1 focuses on one complete session: pick a doorway, write what feels okay, send once, receive Bubbl’s supportive reply, and get one optional small step toward talking with another person.

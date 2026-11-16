@@ -30,6 +30,10 @@ const socialReminderClose = document.querySelector("#socialReminderClose");
 const socialReminderAction = document.querySelector("#socialReminderAction");
 const socialReminderHours = document.querySelector("#socialReminderHours");
 const socialReminderHourWord = document.querySelector("#socialReminderHourWord");
+const apiBase = typeof window.DEARBUBBL_API_BASE === "string"
+  ? window.DEARBUBBL_API_BASE.trim().replace(/\/+$/, "")
+  : "";
+const isGitHubPages = window.location.hostname.endsWith("github.io");
 
 let lastStepId = null;
 let quoteOpenTimer;
@@ -283,7 +287,10 @@ chatForm.addEventListener("submit", async (event) => {
   showThinking();
 
   try {
-    const result = await fetch("/api/chat", {
+    if (isGitHubPages && !apiBase) {
+      throw new Error("This GitHub Pages copy needs its AI server URL in site-config.js first.");
+    }
+    const result = await fetch(`${apiBase}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message, style: DearBubblStorage.getVoiceStyle(), mode: selectedChatMode }),
