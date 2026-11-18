@@ -99,6 +99,7 @@
           <div class="privacy-reminder" role="note"><span class="privacy-reminder-icon">♡</span><div><strong>Keep private details out.</strong><p>Don’t share your address, phone number, school name, password, email, or full name. You can talk about feelings without identifying yourself.</p></div></div>
           <label class="sr-only" for="messageInput">Your message</label>
           <textarea id="messageInput" rows="2" maxlength="1200" placeholder="Write only what feels okay to share..."></textarea>
+          <div class="privacy-alert" id="privacyAlert" hidden role="alert"><strong>Private detail detected:</strong> <mark id="privacyMatch"></mark><span> Please remove it before sending.</span></div>
           <div class="composer-footer"><span id="privacyHint">No private details, please ♡</span><button class="send-button" id="sendButton" type="submit"><span>Send to Bubbl</span><span class="send-arrow">→</span></button></div>
         </form>
       </section>

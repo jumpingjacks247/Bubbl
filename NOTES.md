@@ -36,6 +36,7 @@ The AI key comes from the server-only `getKey()` helper in `minddo-key.js`. It a
 - Bubbl refuses clearly off-topic questions with a gentle scope reminder and refuses requests to override, reveal, or bypass its rules before sending anything to the AI.
 - Serious messages are handled on the server without calling the AI, and the page now reveals a focused support card with clickable 911 and 988 actions.
 - A privacy reminder now sits directly above the message box, and the server also rejects common private details before they can reach OpenAI.
+- If the user types a detected private detail, the page highlights the exact local text and reminds them to remove it before sending.
 - The header and hero now use the supplied DearBubbl logo, and the promotion line says “Always a place to land.”
 - The page now uses a pale blue and white cloud background, dark navy text, and varied pastel button colors.
 - The large hero logo now sits on a white circle so it stays clear over the cloud background.

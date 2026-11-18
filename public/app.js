@@ -8,6 +8,8 @@ const stepText = document.querySelector("#stepText");
 const completeStepButton = document.querySelector("#completeStepButton");
 const helpCard = document.querySelector("#helpCard");
 const privacyHint = document.querySelector("#privacyHint");
+const privacyAlert = document.querySelector("#privacyAlert");
+const privacyMatch = document.querySelector("#privacyMatch");
 const dailyGoalList = document.querySelector("#dailyGoalList");
 const goalCount = document.querySelector("#goalCount");
 const quoteFlight = document.querySelector("#quoteFlight");
@@ -192,8 +194,21 @@ function removeThinking() {
   document.querySelector("#thinkingRow")?.remove();
 }
 
+function findPrivateDetail(text) {
+  return text.match(/(?:\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|\b\d{1,5}\s+[A-Za-z]+\s+(?:Street|St|Road|Rd|Avenue|Ave|Drive|Dr|Lane|Ln)\b|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b|\b\d{5}(?:-\d{4})?\b|\b(?:my|our)\s+(?:address|phone|email|school name|password)\b)/i);
+}
+
 function containsPrivateDetail(text) {
-  return /(?:\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|\b\d{1,5}\s+[A-Za-z]+\s+(?:Street|St|Road|Rd|Avenue|Ave|Drive|Dr|Lane|Ln)\b|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b|\b\d{5}(?:-\d{4})?\b|\b(?:my|our)\s+(?:address|phone|email|school name|password)\b)/i.test(text);
+  return Boolean(findPrivateDetail(text));
+}
+
+function updatePrivacyReminder() {
+  const match = findPrivateDetail(messageInput.value);
+  const hasPrivateDetail = Boolean(match);
+  privacyHint.textContent = hasPrivateDetail ? "Please remove private details before sending ♡" : "No private details, please ♡";
+  privacyHint.classList.toggle("warning", hasPrivateDetail);
+  privacyAlert.hidden = !hasPrivateDetail;
+  privacyMatch.textContent = hasPrivateDetail ? match[0] : "";
 }
 
 function showNextStep() {
@@ -261,10 +276,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 messageInput.addEventListener("input", () => {
-  privacyHint.textContent = containsPrivateDetail(messageInput.value)
-    ? "Please remove private details before sending ♡"
-    : "No private details, please ♡";
-  privacyHint.classList.toggle("warning", containsPrivateDetail(messageInput.value));
+  updatePrivacyReminder();
 });
 
 chatForm.addEventListener("submit", async (event) => {
@@ -272,8 +284,7 @@ chatForm.addEventListener("submit", async (event) => {
   const message = messageInput.value.trim();
   if (!message || sendButton.disabled) return;
   if (containsPrivateDetail(message)) {
-    privacyHint.textContent = "Let's remove that private detail first ♡";
-    privacyHint.classList.add("warning");
+    updatePrivacyReminder();
     return;
   }
 
