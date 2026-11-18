@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const { getBubblReply, isHighRiskMessage, getGuardReply } = require("./ai.js");
+const { isConfigured: isKeygenConfigured } = require("./minddo-key.js");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -32,7 +33,7 @@ app.use((request, response, next) => {
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/health", (_request, response) => {
-  response.json({ ok: true, aiReady: Boolean(process.env.OPENAI_API_KEY) });
+  response.json({ ok: true, aiReady: isKeygenConfigured() });
 });
 
 app.post("/api/chat", async (request, response) => {
@@ -59,7 +60,7 @@ app.post("/api/chat", async (request, response) => {
   if (isHighRiskMessage(message)) {
     response.json({
       safety: true,
-      reply: "I'm really glad you told me. You deserve support from a trusted adult right now. If you may be in immediate danger, call 911; in the U.S., call or text 988 for the Suicide & Crisis Lifeline.",
+      reply: "I'm really glad you told me. Please tell a trusted adult right now. If you may be in immediate danger, call 911; in the U.S., call or text 988 for the Suicide & Crisis Lifeline.",
     });
     return;
   }
@@ -68,9 +69,12 @@ app.post("/api/chat", async (request, response) => {
     const reply = await getBubblReply(message, style, mode);
     response.json({ reply });
   } catch (error) {
-    console.error("DearBubbl AI request failed:", error?.message || "unknown error");
+    console.error("DearBubbl AI request failed. Fix:", error?.fix || "Check the MindDo key service.");
     response.status(503).json({
-      error: "I couldn't reach Bubbl right now. Please check the OpenAI key in .env and your internet connection, then try again.",
+      error: {
+        message: error?.message || "Bubbl could not answer right now.",
+        fix: error?.fix || "Check the MindDo key service.",
+      },
     });
   }
 });

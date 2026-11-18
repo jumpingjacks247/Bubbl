@@ -297,10 +297,17 @@ chatForm.addEventListener("submit", async (event) => {
     });
     const data = await result.json();
     removeThinking();
-    if (!result.ok) throw new Error(data.error || "Bubbl needs a moment.");
+    if (!result.ok) {
+      const errorMessage = typeof data.error === "string" ? data.error : data.error?.message;
+      throw new Error(errorMessage || "Bubbl needs a moment.");
+    }
     addMessage("bubbl", data.reply);
     DearBubblStorage.addConversation({ role: "bubbl", text: data.reply, createdAt: new Date().toISOString() });
-    if (data.safety) helpCard.hidden = false;
+    if (data.safety) {
+      const wasHidden = helpCard.hidden;
+      helpCard.hidden = false;
+      if (wasHidden) helpCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
     showNextStep();
   } catch (error) {
     removeThinking();

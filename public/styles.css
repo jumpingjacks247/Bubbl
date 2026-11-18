@@ -63,6 +63,7 @@ footer { padding: 26px 4px 0; color: #aaa7b6; font-size: .66rem; } footer span:l
 .quote-collection-list { grid-template-columns: 1fr; gap: 18px; max-height: 520px; }
 .collection-group { min-width: 0; }.collection-group-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 8px; color: var(--ink); font-size: .78rem; font-weight: 700; }.collection-group-heading small { color: var(--muted); font-size: .64rem; font-weight: 500; }.collection-group-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; }.collection-group-grid .collection-empty { min-height: 0; }
 @media (max-width: 720px) { .collection-group-grid { grid-template-columns: repeat(2, 1fr); } }
+.help-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }.help-action { display: inline-flex; align-items: center; border-radius: 99px; padding: 8px 11px; color: white; font-size: .68rem; font-weight: 700; text-decoration: none; }.help-action.emergency { background: var(--coral); }.help-action.crisis { background: var(--purple); }.help-action:hover { transform: translateY(-1px); }
 .opinion-blue { background: #dceefe; color: #4d7398; }
 
 /* Gallery popup and compact quote cards */

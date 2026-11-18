@@ -8,7 +8,7 @@
 
 Keep the `npm start` server running while using the app; if the page ever says it cannot connect, run that command again.
 
-The OpenAI key is read only from `.env`. The model is `gpt-5.6-luna`. If the AI cannot answer, the app tells you to check `.env` and the internet connection. The key is never sent to the page.
+The AI key comes from the server-only `getKey()` helper in `minddo-key.js`. It asks MindDo for a short-lived key using `KEYGEN_URL` and `KEYGEN_TOKEN` from `.env`, caches it until `expiresAt`, and refreshes it once if OpenAI says it is invalid. The key and token are never sent to the page or printed. The model to use is `gpt-5.6-luna`, the only available model with “luna” in its name.
 
 ## Vercel setup
 
@@ -34,6 +34,7 @@ The OpenAI key is read only from `.env`. The model is `gpt-5.6-luna`. If the AI 
 - Clicking Bubbl's `b` icon opens a speaking-style chooser with clearly different Friendly, Casual/Chatty, Empathetic, and Upbeat tones. Each has a small ASCII face, a different description/color, and the choice saves in the browser and is applied to the next AI message.
 - The chat now has a “Practice an opinion” doorway. It sends a safe opinion-practice mode to Bubbl, which gives kind, specific feedback on how the opinion was expressed.
 - Bubbl refuses clearly off-topic questions with a gentle scope reminder and refuses requests to override, reveal, or bypass its rules before sending anything to the AI.
+- Serious messages are handled on the server without calling the AI, and the page now reveals a focused support card with clickable 911 and 988 actions.
 - The header and hero now use the supplied DearBubbl logo, and the promotion line says “Always a place to land.”
 - The page now uses a pale blue and white cloud background, dark navy text, and varied pastel button colors.
 - The large hero logo now sits on a white circle so it stays clear over the cloud background.
