@@ -193,7 +193,7 @@ function removeThinking() {
 }
 
 function containsPrivateDetail(text) {
-  return /(?:\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|\b\d{1,5}\s+[A-Za-z]+\s+(?:Street|St|Road|Rd|Avenue|Ave|Drive|Dr|Lane|Ln)\b|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b)/i.test(text);
+  return /(?:\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|\b\d{1,5}\s+[A-Za-z]+\s+(?:Street|St|Road|Rd|Avenue|Ave|Drive|Dr|Lane|Ln)\b|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b|\b\d{5}(?:-\d{4})?\b|\b(?:my|our)\s+(?:address|phone|email|school name|password)\b)/i.test(text);
 }
 
 function showNextStep() {
