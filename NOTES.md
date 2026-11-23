@@ -30,6 +30,7 @@ The AI key comes from the server-only `getKey()` helper in `minddo-key.js`. It a
 - Safety reminders are visible before and during chat. The app blocks common private details, has a high-risk support message with 911/988, never pressures the student to keep sharing, and disables Send while it shows “Thinking…”.
 - The Daily Social Goal tracker shows three checklist tasks for today and gives a thumbs-up when each one is completed.
 - The comfort-zone challenge card now gives exactly one small challenge per local day, keeps that same challenge until midnight, and shows it on page load and after chat.
+- The comfort-zone challenge card lets the user mark today’s challenge done and shows the total number of finished challenges saved on this computer.
 - If no Daily Social Goal is finished, DearBubbl shows a small, closable reminder every time the app opens and about once per local clock hour while it stays open. It stops for the day after one goal is checked.
 - Clicking Bubbl's `b` icon opens a speaking-style chooser with clearly different Friendly, Casual/Chatty, Empathetic, and Upbeat tones. Each has a small ASCII face, a different description/color, and the choice saves in the browser and is applied to the next AI message.
 - The chat now has a “Practice an opinion” doorway. It sends a safe opinion-practice mode to Bubbl, which gives kind, specific feedback on how the opinion was expressed.

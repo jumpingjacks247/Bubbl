@@ -121,6 +121,7 @@ const sampleState = {
   voiceStyle: "friendly",
   socialReminderStamp: "",
   dailyChallenge: { date: "", id: "", completed: false },
+  challengeCompletionCount: 0,
   conversations: [],
   completedSteps: [],
   dailyGoals: { date: "", completed: [] },
@@ -198,9 +199,17 @@ function addConversation(conversation) {
 function completeStep(stepId) {
   const state = readState();
   const dailyChallenge = ensureDailyChallenge(state);
-  if (dailyChallenge.id === stepId) dailyChallenge.completed = true;
+  if (dailyChallenge.id === stepId && !dailyChallenge.completed) {
+    dailyChallenge.completed = true;
+    state.challengeCompletionCount = Math.max(0, Number(state.challengeCompletionCount) || 0) + 1;
+  }
   if (!state.completedSteps.includes(stepId)) state.completedSteps.push(stepId);
   saveState(state);
+}
+
+function getChallengeCompletionCount() {
+  const count = Number(readState().challengeCompletionCount);
+  return Number.isFinite(count) ? Math.max(0, count) : 0;
 }
 
 function getDailyChallenge() {
@@ -250,4 +259,4 @@ function getQuoteCollection() {
   return collected.map(quoteWithRarity);
 }
 
-window.DearBubblStorage = { readState, addConversation, completeStep, getDailyChallenge, getDailyGoals, toggleDailyGoal, drawBlindBoxQuote, getQuoteCollection, getVoiceStyle, setVoiceStyle, getSocialReminderStamp, setSocialReminderStamp };
+window.DearBubblStorage = { readState, addConversation, completeStep, getChallengeCompletionCount, getDailyChallenge, getDailyGoals, toggleDailyGoal, drawBlindBoxQuote, getQuoteCollection, getVoiceStyle, setVoiceStyle, getSocialReminderStamp, setSocialReminderStamp };

@@ -5,6 +5,7 @@ const chatLog = document.querySelector("#chatLog");
 const starterArea = document.querySelector("#starterArea");
 const nextStepCard = document.querySelector("#nextStepCard");
 const stepText = document.querySelector("#stepText");
+const challengeCount = document.querySelector("#challengeCount");
 const completeStepButton = document.querySelector("#completeStepButton");
 const helpCard = document.querySelector("#helpCard");
 const privacyHint = document.querySelector("#privacyHint");
@@ -213,12 +214,14 @@ function updatePrivacyReminder() {
 
 function showNextStep() {
   const challenge = DearBubblStorage.getDailyChallenge();
+  const completedChallenges = DearBubblStorage.getChallengeCompletionCount();
   lastStepId = challenge.id;
   stepText.textContent = challenge.completed
     ? "You completed today's challenge. That counts as a brave step."
     : challenge.label;
   completeStepButton.textContent = challenge.completed ? "Completed today ✓" : "I’ll try this →";
   completeStepButton.disabled = challenge.completed;
+  challengeCount.textContent = `${completedChallenges} challenge${completedChallenges === 1 ? "" : "s"} finished`;
   nextStepCard.hidden = false;
 }
 
